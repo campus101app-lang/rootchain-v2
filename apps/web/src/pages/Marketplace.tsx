@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api";
+import { resolveAssetUrl } from "../lib/assets";
 import type { Project } from "../types/project";
 import { Shell, Glass, Btn } from "../components/ui";
 
@@ -50,7 +51,7 @@ export function MarketplacePage() {
           <Glass key={p.id} className="overflow-hidden hover:border-lime/20 transition-colors">
             {p.landPhotoUrls[0] && (
               <img
-                src={p.landPhotoUrls[0]}
+                src={resolveAssetUrl(p.landPhotoUrls[0])}
                 alt=""
                 className="w-full h-40 object-cover border-b border-white/[0.06]"
               />

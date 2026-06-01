@@ -16,7 +16,8 @@ const API = "/api/v1";
 
 export function createApp() {
   const app = express();
-  app.use(helmet());
+  app.set("trust proxy", 1);
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
   app.use(
     cors({
       origin: (origin, cb) => {

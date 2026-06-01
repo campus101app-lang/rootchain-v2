@@ -10,10 +10,6 @@ import {
   listMarketplaceFeatured,
 } from "./project.service.js";
 
-function baseUrl(req: { protocol: string; get: (n: string) => string | undefined }) {
-  return `${req.protocol}://${req.get("host")}`;
-}
-
 const createSchema = z.object({
   title: z.string().min(3).max(120),
   description: z.string().min(10).max(5000),
@@ -32,7 +28,7 @@ export const projectRouter = Router();
 
 projectRouter.get("/marketplace/featured", async (req, res) => {
   try {
-    const data = await listMarketplaceFeatured(baseUrl(req));
+    const data = await listMarketplaceFeatured(req);
     res.json({ success: true, data });
   } catch (e) {
     res.status(500).json({ success: false, error: { message: e instanceof Error ? e.message : "Error" } });
@@ -41,7 +37,7 @@ projectRouter.get("/marketplace/featured", async (req, res) => {
 
 projectRouter.get("/marketplace", async (req, res) => {
   try {
-    const data = await listMarketplace(baseUrl(req));
+    const data = await listMarketplace(req);
     res.json({ success: true, data });
   } catch (e) {
     res.status(500).json({ success: false, error: { message: e instanceof Error ? e.message : "Error" } });
@@ -51,7 +47,7 @@ projectRouter.get("/marketplace", async (req, res) => {
 projectRouter.get("/mine", requireAuth, requireRole("FARMER"), async (req, res) => {
   try {
     const { sub } = (req as AuthRequest).auth;
-    const data = await listFarmerProjects(sub, baseUrl(req));
+    const data = await listFarmerProjects(sub, req);
     res.json({ success: true, data });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Error";
@@ -61,7 +57,7 @@ projectRouter.get("/mine", requireAuth, requireRole("FARMER"), async (req, res) 
 
 projectRouter.get("/:id", async (req, res) => {
   try {
-    const data = await getProject(req.params.id, baseUrl(req));
+    const data = await getProject(req.params.id, req);
     res.json({ success: true, data });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Error";
@@ -73,7 +69,7 @@ projectRouter.post("/", requireAuth, requireRole("FARMER"), async (req, res) => 
   try {
     const body = createSchema.parse(req.body);
     const { sub } = (req as AuthRequest).auth;
-    const data = await createProject(sub, body, baseUrl(req));
+    const data = await createProject(sub, body, req);
     res.status(201).json({ success: true, data });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Error";

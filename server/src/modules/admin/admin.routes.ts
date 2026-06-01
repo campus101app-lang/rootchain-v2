@@ -7,10 +7,6 @@ import { approveProject, verifyFarmer } from "../projects/project.service.js";
 import { decStr } from "../../lib/serialize.js";
 import { env } from "../../config/env.js";
 
-function baseUrl(req: { protocol: string; get: (n: string) => string | undefined }) {
-  return `${req.protocol}://${req.get("host")}`;
-}
-
 export const adminRouter = Router();
 
 adminRouter.use(requireAuth, requireRole("ADMIN"));
@@ -84,7 +80,7 @@ adminRouter.post("/farmers/:id/verify", async (req, res) => {
 
 adminRouter.post("/projects/:id/approve", async (req, res) => {
   try {
-    const data = await approveProject(req.params.id, baseUrl(req));
+    const data = await approveProject(req.params.id, req);
     res.json({ success: true, data });
   } catch {
     res.status(404).json({ success: false, error: { message: "Not found" } });

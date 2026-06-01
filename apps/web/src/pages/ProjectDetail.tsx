@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, getToken } from "../lib/api";
+import { resolveAssetUrl } from "../lib/assets";
 import type { Project } from "../types/project";
 import { Shell, Glass, Btn, Field } from "../components/ui";
 
@@ -58,7 +59,11 @@ export function ProjectDetailPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         <Glass className="p-6 space-y-4">
           {project.landPhotoUrls[0] && (
-            <img src={project.landPhotoUrls[0]} alt="" className="w-full rounded-xl object-cover max-h-64" />
+            <img
+              src={resolveAssetUrl(project.landPhotoUrls[0])}
+              alt=""
+              className="w-full rounded-xl object-cover max-h-64"
+            />
           )}
           <h1 className="text-2xl font-black">{project.title}</h1>
           <p className="text-sm text-slate-400">{project.description}</p>
@@ -75,7 +80,12 @@ export function ProjectDetailPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             {project.landPhotoUrls.map((url) => (
-              <img key={url} src={url} alt="" className="w-20 h-20 rounded-lg object-cover" />
+              <img
+                key={url}
+                src={resolveAssetUrl(url)}
+                alt=""
+                className="w-20 h-20 rounded-lg object-cover"
+              />
             ))}
           </div>
         </Glass>

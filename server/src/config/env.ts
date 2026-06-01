@@ -10,6 +10,12 @@ const schema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
   WALLET_ENCRYPTION_KEY: z.string().min(64),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
+  /** Public API origin for upload URLs (https://your-api.up.railway.app). Required in production behind TLS. */
+  PUBLIC_URL: z
+    .string()
+    .url()
+    .optional()
+    .transform((v) => (v && v.length > 0 ? v.replace(/\/$/, "") : undefined)),
   STELLAR_NETWORK: z.enum(["testnet", "mainnet"]).default("testnet"),
   STELLAR_HORIZON_URL_TESTNET: z.string().url(),
   STELLAR_HORIZON_URL_MAINNET: z.string().url(),

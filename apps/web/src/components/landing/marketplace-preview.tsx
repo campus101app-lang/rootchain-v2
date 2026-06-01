@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { api } from "../../lib/api";
+import { resolveAssetUrl } from "../../lib/assets";
 import type { Project } from "../../types/project";
 import { Badge } from "../marketing-ui/badge";
 import { GlowCard } from "../marketing-ui/card";
@@ -58,7 +59,7 @@ export function MarketplacePreview() {
                 <GlowCard className="overflow-hidden h-full hover:border-lime/20 transition-colors">
                   {p.landPhotoUrls[0] ? (
                     <img
-                      src={p.landPhotoUrls[0]}
+                      src={resolveAssetUrl(p.landPhotoUrls[0])}
                       alt=""
                       className="h-36 w-full object-cover"
                     />

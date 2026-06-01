@@ -1,5 +1,7 @@
 import { FarmerVerificationStatus, Prisma, ProjectStatus, Role } from "@prisma/client";
+import type { Request } from "express";
 import { prisma } from "../../lib/prisma.js";
+import { toAssetUrl } from "../../lib/public-url.js";
 import { dec, decStr } from "../../lib/serialize.js";
 import { env } from "../../config/env.js";
 
@@ -30,7 +32,7 @@ function mapProject(
       user?: { fullName: string; country: string | null };
     };
   },
-  baseUrl: string,
+  req?: Pick<Request, "protocol" | "get">,
 ) {
   const goal = dec(p.fundingGoal);
   const raised = dec(p.raisedAmount);
@@ -40,12 +42,8 @@ function mapProject(
     description: p.description,
     category: p.category,
     farmPlan: p.farmPlan,
-    landPhotoUrls: p.landPhotoUrls.map((u) => (u.startsWith("http") ? u : `${baseUrl}${u}`)),
-    idDocumentUrl: p.idDocumentUrl
-      ? p.idDocumentUrl.startsWith("http")
-        ? p.idDocumentUrl
-        : `${baseUrl}${p.idDocumentUrl}`
-      : null,
+    landPhotoUrls: p.landPhotoUrls.map((u) => toAssetUrl(u, req)),
+    idDocumentUrl: p.idDocumentUrl ? toAssetUrl(p.idDocumentUrl, req) : null,
     fundingGoal: decStr(p.fundingGoal),
     raisedAmount: decStr(p.raisedAmount),
     expectedRoi: decStr(p.expectedRoi),
@@ -74,38 +72,38 @@ const projectInclude = {
   },
 } as const;
 
-export async function listMarketplace(baseUrl: string) {
+export async function listMarketplace(req: Pick<Request, "protocol" | "get">) {
   const rows = await prisma.project.findMany({
     where: { status: ProjectStatus.ACTIVE },
     include: projectInclude,
     orderBy: { createdAt: "desc" },
   });
-  return rows.map((p) => mapProject(p, baseUrl));
+  return rows.map((p) => mapProject(p, req));
 }
 
 /** Top open listings for landing: highest % funded, excluding fully funded. */
-export async function listMarketplaceFeatured(baseUrl: string, limit = 3) {
+export async function listMarketplaceFeatured(req: Pick<Request, "protocol" | "get">, limit = 3) {
   const rows = await prisma.project.findMany({
     where: { status: ProjectStatus.ACTIVE },
     include: projectInclude,
   });
   return rows
     .filter((p) => dec(p.raisedAmount) < dec(p.fundingGoal))
-    .map((p) => mapProject(p, baseUrl))
+    .map((p) => mapProject(p, req))
     .sort((a, b) => b.percentFunded - a.percentFunded)
     .slice(0, limit);
 }
 
-export async function getProject(id: string, baseUrl: string) {
+export async function getProject(id: string, req: Pick<Request, "protocol" | "get">) {
   const p = await prisma.project.findUnique({
     where: { id },
     include: projectInclude,
   });
   if (!p) throw new Error("NOT_FOUND");
-  return mapProject(p, baseUrl);
+  return mapProject(p, req);
 }
 
-export async function listFarmerProjects(userId: string, baseUrl: string) {
+export async function listFarmerProjects(userId: string, req: Pick<Request, "protocol" | "get">) {
   const profile = await prisma.farmerProfile.findUnique({ where: { userId } });
   if (!profile) throw new Error("NOT_FARMER");
 
@@ -114,7 +112,7 @@ export async function listFarmerProjects(userId: string, baseUrl: string) {
     include: projectInclude,
     orderBy: { createdAt: "desc" },
   });
-  return rows.map((p) => mapProject(p, baseUrl));
+  return rows.map((p) => mapProject(p, req));
 }
 
 export async function createProject(
@@ -132,7 +130,7 @@ export async function createProject(
     startDate: string;
     endDate: string;
   },
-  baseUrl: string,
+  req: Pick<Request, "protocol" | "get">,
 ) {
   const profile = await prisma.farmerProfile.findUnique({ where: { userId } });
   if (!profile) throw new Error("NOT_FARMER");
@@ -176,16 +174,16 @@ export async function createProject(
     include: projectInclude,
   });
 
-  return mapProject(row, baseUrl);
+  return mapProject(row, req);
 }
 
-export async function approveProject(projectId: string, baseUrl: string) {
+export async function approveProject(projectId: string, req: Pick<Request, "protocol" | "get">) {
   const row = await prisma.project.update({
     where: { id: projectId },
     data: { status: ProjectStatus.ACTIVE, verifiedAt: new Date() },
     include: projectInclude,
   });
-  return mapProject(row, baseUrl);
+  return mapProject(row, req);
 }
 
 export async function verifyFarmer(farmerProfileId: string) {
