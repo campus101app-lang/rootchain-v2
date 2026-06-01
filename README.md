@@ -55,8 +55,11 @@ After seed, if investments fail with no USDC: `cd server && npx tsx scripts/boot
 
 ## Deploy
 
-- **Web (Vercel):** see [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md) — Root Directory `apps/web`, set `VITE_API_URL` to your Railway API.
-- **API + DB (Railway):** deploy `server/` with Postgres; not hosted on Vercel.
+1. **API + Postgres (Railway)** — [DEPLOY-RAILWAY.md](./DEPLOY-RAILWAY.md) ← do this first  
+2. **Web app (Vercel)** — [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md) — set `VITE_API_URL` to Railway URL  
+3. **Landing (Vercel)** — Root Directory `apps/landing`, optional marketing site  
+
+**Vercel alone is not enough** — without Railway you will see “Invalid response from server”.
 
 ## Mainnet flip
 

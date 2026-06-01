@@ -1,0 +1,10 @@
+# Deploy API from monorepo root: https://docs.railway.app/guides/monorepo
+[build]
+builder = "nixpacks"
+buildCommand = "npm ci && npm run build --workspace=@rootchain/server"
+
+[deploy]
+startCommand = "npm run start:prod --workspace=@rootchain/server"
+healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"

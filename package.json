@@ -15,6 +15,8 @@
     "dev:landing": "npm run dev --workspace=landing",
     "dev": "npm run dev:api & npm run dev:web",
     "db:deploy": "npm run db:deploy --workspace=server",
-    "db:seed": "npm run db:seed --workspace=server"
+    "db:seed": "npm run db:seed --workspace=server",
+    "build:server": "npm run build --workspace=@rootchain/server",
+    "start:server": "npm run start:prod --workspace=@rootchain/server"
   }
 }

@@ -1,6 +1,14 @@
 # Deploy Rootchain V2 on Vercel (+ Railway API)
 
-The **frontend** (`apps/web`) goes on **Vercel**. The **API** (`server`) must run on **Railway** (or similar)—Vercel is not suited for Express + Postgres + Stellar wallet jobs.
+The **frontend** (`apps/web`) goes on **Vercel**. The **API** (`server`) must run on **Railway** — see **[DEPLOY-RAILWAY.md](./DEPLOY-RAILWAY.md)**.
+
+### “Invalid response from server” on Vercel?
+
+You deployed only the frontend. Vercel returns HTML for `/api/v1`, not JSON.
+
+1. Deploy API on Railway ([guide](./DEPLOY-RAILWAY.md))
+2. Set **`VITE_API_URL`** = `https://YOUR-RAILWAY-URL.up.railway.app/api/v1`
+3. **Redeploy** the Vercel project
 
 ## Why the repo didn’t show in Vercel
 

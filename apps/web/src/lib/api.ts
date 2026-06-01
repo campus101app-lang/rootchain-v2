@@ -1,5 +1,10 @@
 const BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") || "/api/v1";
 
+function isProductionMisconfigured(): boolean {
+  if (import.meta.env.DEV) return false;
+  return !import.meta.env.VITE_API_URL || BASE.startsWith("/");
+}
+
 export function getToken(): string | null {
   return localStorage.getItem("rc_v2_token");
 }
@@ -23,8 +28,13 @@ export async function api<T>(
   try {
     res = await fetch(`${BASE}${path}`, { ...init, headers });
   } catch {
+    if (isProductionMisconfigured()) {
+      throw new Error(
+        "API not configured. Set VITE_API_URL to your Railway URL (e.g. https://xxx.up.railway.app/api/v1) in Vercel → Environment Variables, then redeploy.",
+      );
+    }
     throw new Error(
-      "Cannot reach the API. Start the backend with: cd server && npm run dev — then use http://localhost:5173",
+      "Cannot reach the API. Start the backend: cd server && npm run dev — then open http://localhost:5173",
     );
   }
 
@@ -32,7 +42,12 @@ export async function api<T>(
   try {
     json = (await res.json()) as typeof json;
   } catch {
-    throw new Error(`Invalid response from server (${res.status})`);
+    const hint = isProductionMisconfigured()
+      ? " Set VITE_API_URL to your Railway API URL in Vercel and redeploy."
+      : res.status === 404
+        ? " The API URL may be wrong (got HTML, not JSON)."
+        : "";
+    throw new Error(`Invalid response from server (${res.status}).${hint}`);
   }
 
   if (!res.ok || !json.success) {
