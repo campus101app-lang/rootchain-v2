@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-lime: #84cc16;
-  --color-surface: #0c1018;
+  --color-lime: #a3e635;
+  --color-surface: #06080c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #06080c;
+  color: #f1f5f9;
 }
