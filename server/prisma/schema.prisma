@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  INVESTOR
+  FARMER
+  ADMIN
+}
+
+enum StellarNetwork {
+  TESTNET
+  MAINNET
+}
+
+enum FarmerVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_REVIEW
+  ACTIVE
+  CLOSED
+  REJECTED
+}
+
+enum InvestmentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role
+  fullName     String   @map("full_name")
+  phone        String?
+  country      String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  wallet        Wallet?
+  farmerProfile FarmerProfile?
+  refreshTokens RefreshToken[]
+  investments   Investment[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Wallet {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @unique @map("user_id") @db.Uuid
+  publicKey       String         @unique @map("public_key")
+  network         StellarNetwork @default(TESTNET)
+  encryptedSecret String?        @map("encrypted_secret")
+  funded          Boolean        @default(false)
+  usdcTrustline   Boolean        @default(false) @map("usdc_trustline")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model FarmerProfile {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  userId             String                   @unique @map("user_id") @db.Uuid
+  farmName           String                   @map("farm_name")
+  location           String
+  verificationStatus FarmerVerificationStatus @default(PENDING) @map("verification_status")
+  createdAt          DateTime                 @default(now()) @map("created_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@map("farmer_profiles")
+}
+
+model Project {
+  id             String        @id @default(uuid()) @db.Uuid
+  farmerId       String        @map("farmer_id") @db.Uuid
+  title          String
+  description    String        @default("")
+  category       String        @default("crops")
+  farmPlan       String        @default("") @map("farm_plan")
+  landPhotoUrls  String[]      @default([]) @map("land_photo_urls")
+  idDocumentUrl  String?       @map("id_document_url")
+  fundingGoal    Decimal       @map("funding_goal") @db.Decimal(18, 2)
+  raisedAmount   Decimal       @default(0) @map("raised_amount") @db.Decimal(18, 2)
+  expectedRoi    Decimal       @map("expected_roi") @db.Decimal(5, 2)
+  durationDays   Int           @map("duration_days")
+  startDate      DateTime      @map("start_date") @db.Date
+  endDate        DateTime      @map("end_date") @db.Date
+  status         ProjectStatus @default(DRAFT)
+  verifiedAt     DateTime?     @map("verified_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  farmer      FarmerProfile @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  investments Investment[]
+
+  @@map("projects")
+}
+
+model Investment {
+  id            String           @id @default(uuid()) @db.Uuid
+  projectId     String           @map("project_id") @db.Uuid
+  investorId    String           @map("investor_id") @db.Uuid
+  amountUsdc    Decimal          @map("amount_usdc") @db.Decimal(18, 7)
+  stellarTxHash String           @unique @map("stellar_tx_hash")
+  status        InvestmentStatus @default(CONFIRMED)
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  investor User    @relation(fields: [investorId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([investorId])
+  @@map("investments")
+}

@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: rootchain
+      POSTGRES_PASSWORD: rootchain
+      POSTGRES_DB: rootchain_v2
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_v2:/var/lib/postgresql/data
+
+volumes:
+  pgdata_v2:
