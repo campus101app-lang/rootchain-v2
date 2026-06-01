@@ -83,6 +83,19 @@ export async function listMarketplace(baseUrl: string) {
   return rows.map((p) => mapProject(p, baseUrl));
 }
 
+/** Top open listings for landing: highest % funded, excluding fully funded. */
+export async function listMarketplaceFeatured(baseUrl: string, limit = 3) {
+  const rows = await prisma.project.findMany({
+    where: { status: ProjectStatus.ACTIVE },
+    include: projectInclude,
+  });
+  return rows
+    .filter((p) => dec(p.raisedAmount) < dec(p.fundingGoal))
+    .map((p) => mapProject(p, baseUrl))
+    .sort((a, b) => b.percentFunded - a.percentFunded)
+    .slice(0, limit);
+}
+
 export async function getProject(id: string, baseUrl: string) {
   const p = await prisma.project.findUnique({
     where: { id },

@@ -75,6 +75,8 @@ On the **API service** (not Postgres), set:
 | `AUTO_APPROVE_PROJECTS` | `true` |
 | `CORS_ORIGIN` | Your Vercel URLs (comma-separated, no spaces) |
 
+**Do not put `VITE_API_URL` on Railway** — that is a **Vercel** build variable for `apps/web` only. Railway runs the API; it ignores `VITE_*`.
+
 **CORS example:**
 
 ```env

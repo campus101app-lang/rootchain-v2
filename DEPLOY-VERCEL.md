@@ -83,10 +83,12 @@ You need **two** Vercel projects from the same repo:
 
 | Name | Value |
 |------|--------|
-| `VITE_API_URL` | `https://YOUR-RAILWAY-URL/api/v1` |
+| `VITE_API_URL` | `https://YOUR-RAILWAY-URL/api/v1` *(optional if using `apps/web/vercel.json` API proxy)* |
 | `VITE_STELLAR_NETWORK` | `testnet` |
 
-5. Deploy.
+**Set these on Vercel, not Railway.** `VITE_*` is baked into the frontend at build time; Railway’s API service does not use them.
+
+5. Deploy (required after changing env vars).
 
 SPA routes (`/marketplace`, `/dashboard`, etc.) are handled by `vercel.json` rewrites.
 

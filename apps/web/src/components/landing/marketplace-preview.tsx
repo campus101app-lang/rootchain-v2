@@ -1,77 +1,98 @@
-
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { api } from "../../lib/api";
+import type { Project } from "../../types/project";
 import { Badge } from "../marketing-ui/badge";
 import { GlowCard } from "../marketing-ui/card";
 import { Button } from "../marketing-ui/button";
 import { Section, SectionHeader } from "./section";
 
-const farms = [
-  {
-    title: "Cassava Expansion — Ogun",
-    crop: "Crops",
-    roi: "28%",
-    raised: 72,
-    trust: 94,
-    investors: 48,
-    image: "linear-gradient(135deg,#1a2e1a,#0d1f0d)",
-  },
-  {
-    title: "Aquaculture Cluster — Delta",
-    crop: "Fish",
-    roi: "32%",
-    raised: 45,
-    trust: 91,
-    investors: 31,
-    image: "linear-gradient(135deg,#0f1f2e,#061018)",
-  },
-  {
-    title: "Poultry Feed Integration",
-    crop: "Livestock",
-    roi: "24%",
-    raised: 88,
-    trust: 89,
-    investors: 62,
-    image: "linear-gradient(135deg,#2a1f0f,#141008)",
-  },
-];
+function formatCategory(category: string) {
+  const labels: Record<string, string> = {
+    crops: "Crops",
+    fish: "Fish",
+    livestock: "Livestock",
+    poultry: "Poultry",
+  };
+  return labels[category.toLowerCase()] ?? category.charAt(0).toUpperCase() + category.slice(1);
+}
 
 export function MarketplacePreview() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    void api<Project[]>("/projects/marketplace/featured", { auth: false })
+      .then(setProjects)
+      .catch(() => setProjects([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Section id="marketplace">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeader
           label="Marketplace"
           title="Live farm projects"
-          description="Institutional-grade listings with funding progress, ROI, and AI trust scores."
+          description="Verified listings with funding progress and expected ROI — updated as farmers publish."
         />
-        <div className="grid gap-5 md:grid-cols-3">
-          {farms.map((f) => (
-            <GlowCard key={f.title} className="overflow-hidden">
-              <div className="h-36" style={{ background: f.image }} />
-              <div className="p-5">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-white">{f.title}</h3>
-                  <Badge className="shrink-0">Verified</Badge>
-                </div>
-                <p className="mt-1 text-xs text-slate-500">{f.crop}</p>
-                <div className="mt-4 flex justify-between text-sm">
-                  <span className="text-lime font-semibold">{f.roi} ROI</span>
-                  <span className="text-slate-400">Trust {f.trust}</span>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-lime" style={{ width: `${f.raised}%` }} />
-                </div>
-                <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                  <span>{f.raised}% funded</span>
-                  <span className="flex items-center gap-1">
-                    <Users size={12} /> {f.investors}
-                  </span>
-                </div>
-              </div>
-            </GlowCard>
-          ))}
-        </div>
+
+        {loading && (
+          <p className="text-center text-sm text-slate-500 py-12">Loading projects…</p>
+        )}
+
+        {!loading && projects.length === 0 && (
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 py-14 text-center">
+            <p className="text-slate-400">No open projects yet.</p>
+            <p className="mt-2 text-sm text-slate-500">
+              When verified farmers publish listings, the top opportunities by funding progress will appear here.
+            </p>
+          </div>
+        )}
+
+        {!loading && projects.length > 0 && (
+          <div className="grid gap-5 md:grid-cols-3">
+            {projects.map((p) => (
+              <Link key={p.id} to={`/projects/${p.id}`}>
+                <GlowCard className="overflow-hidden h-full hover:border-lime/20 transition-colors">
+                  {p.landPhotoUrls[0] ? (
+                    <img
+                      src={p.landPhotoUrls[0]}
+                      alt=""
+                      className="h-36 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-36 bg-gradient-to-br from-[#1a2e1a] to-[#0d1f0d]" />
+                  )}
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold text-white leading-snug">{p.title}</h3>
+                      {p.verifiedAt && <Badge className="shrink-0">Verified</Badge>}
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500">{formatCategory(p.category)}</p>
+                    {p.farmer && (
+                      <p className="mt-1 text-xs text-slate-600 truncate">
+                        {p.farmer.farmName} · {p.farmer.location}
+                      </p>
+                    )}
+                    <div className="mt-4 flex justify-between text-sm">
+                      <span className="text-lime font-semibold">{p.expectedRoi}% ROI</span>
+                      <span className="text-slate-400">{p.percentFunded}% funded</span>
+                    </div>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                      <div
+                        className="h-full rounded-full bg-lime transition-all"
+                        style={{ width: `${p.percentFunded}%` }}
+                      />
+                    </div>
+                  </div>
+                </GlowCard>
+              </Link>
+            ))}
+          </div>
+        )}
+
         <div className="mt-10 text-center">
           <Link to="/marketplace">
             <Button variant="outline">

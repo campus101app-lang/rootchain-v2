@@ -7,6 +7,7 @@ import {
   getProject,
   listFarmerProjects,
   listMarketplace,
+  listMarketplaceFeatured,
 } from "./project.service.js";
 
 function baseUrl(req: { protocol: string; get: (n: string) => string | undefined }) {
@@ -28,6 +29,15 @@ const createSchema = z.object({
 });
 
 export const projectRouter = Router();
+
+projectRouter.get("/marketplace/featured", async (req, res) => {
+  try {
+    const data = await listMarketplaceFeatured(baseUrl(req));
+    res.json({ success: true, data });
+  } catch (e) {
+    res.status(500).json({ success: false, error: { message: e instanceof Error ? e.message : "Error" } });
+  }
+});
 
 projectRouter.get("/marketplace", async (req, res) => {
   try {
