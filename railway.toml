@@ -1,7 +1,8 @@
 # Deploy API from monorepo root: https://docs.railway.app/guides/monorepo
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci && npm run build --workspace=@rootchain/server"
+# install phase runs npm ci (see nixpacks.toml); build only compiles server
+buildCommand = "npm run build --workspace=@rootchain/server"
 watchPatterns = ["/server/**", "/packages/**", "/railway.toml", "/package.json", "/package-lock.json"]
 
 [deploy]

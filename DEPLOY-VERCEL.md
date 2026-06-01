@@ -45,18 +45,31 @@ CORS_ORIGIN=https://your-app.vercel.app,https://your-admin.vercel.app
 
 ---
 
-## 2. Deploy marketing landing (Next.js) on Vercel
+## 2. Deploy marketing landing (Next.js) on Vercel — **separate project**
 
-1. **New Project** → same repo.
-2. **Root Directory:** `apps/landing`
-3. **Framework:** Next.js
+The premium landing (`page.tsx` with Hero, Metrics, etc.) lives in **`apps/landing`**, NOT `apps/web`.
+
+You need **two** Vercel projects from the same repo:
+
+| Vercel project | Root Directory | What users see |
+|----------------|----------------|----------------|
+| **rootchain-web** | `apps/web` | Login, marketplace, invest |
+| **rootchain-landing** | `apps/landing` | Marketing homepage |
+
+### Landing setup
+
+1. **Add New Project** → import `rootchain-v2` again (second project).
+2. **Root Directory:** `apps/landing` ← required
+3. **Framework:** Next.js (auto)
 4. **Environment:**
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_APP_URL` | `https://your-vite-app.vercel.app` (or custom domain for `apps/web`) |
+| `NEXT_PUBLIC_APP_URL` | `https://YOUR-WEB-APP.vercel.app` |
 
-5. Deploy → use this URL as your public homepage; CTAs link to the main app.
+5. Deploy. Open the new URL — you should see the full landing (Hero, live metrics, etc.).
+
+`apps/landing` installs with its **own** `npm install` (not the monorepo root).
 
 ---
 
