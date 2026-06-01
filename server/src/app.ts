@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import path from "node:path";
 import { env } from "./config/env.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
 import { walletRouter } from "./modules/wallets/wallet.routes.js";
@@ -11,6 +10,7 @@ import { projectRouter } from "./modules/projects/project.routes.js";
 import { investmentRouter } from "./modules/investments/investment.routes.js";
 import { adminRouter } from "./modules/admin/admin.routes.js";
 import { uploadRouter } from "./modules/uploads/upload.routes.js";
+import { uploadServeRouter } from "./modules/uploads/upload.serve.routes.js";
 
 const API = "/api/v1";
 
@@ -35,7 +35,7 @@ export function createApp() {
     }),
   );
   app.use(express.json({ limit: "8mb" }));
-  app.use("/uploads", express.static(path.resolve("uploads")));
+  app.use("/uploads", uploadServeRouter);
   app.use(rateLimit({ windowMs: 60_000, max: 200 }));
 
   app.get(`${API}/health`, (_req, res) => {

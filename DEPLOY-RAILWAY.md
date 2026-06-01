@@ -132,7 +132,7 @@ NEXT_PUBLIC_APP_URL=https://your-web-app.vercel.app
 
 ## Step 6 — Uploads on Railway
 
-Uploaded images are stored on the API disk (`server/uploads/`). On Railway the filesystem is **ephemeral** — files may disappear on redeploy. For production, plan S3/R2 later. For demo/testnet this is OK.
+Uploaded images are stored in **PostgreSQL** (`stored_files` table) so they survive Railway redeploys. Re-upload photos if a project still shows broken images from before this change.
 
 ---
 

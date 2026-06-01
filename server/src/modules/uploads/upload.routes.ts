@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { requireAuth } from "../../middleware/auth.js";
+import { prisma } from "../../lib/prisma.js";
 
-const UPLOAD_DIR = path.resolve("uploads");
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -29,7 +27,6 @@ uploadRouter.post("/", requireAuth, async (req, res) => {
       return;
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
     const ext =
       mimeType === "image/png"
         ? ".png"
@@ -38,13 +35,22 @@ uploadRouter.post("/", requireAuth, async (req, res) => {
           : mimeType === "application/pdf"
             ? ".pdf"
             : ".jpg";
-    const name = `${randomUUID()}${ext}`;
-    await writeFile(path.join(UPLOAD_DIR, name), buf);
+    const id = randomUUID();
+    const storedName = `${id}${ext}`;
 
-    const url = `/uploads/${name}`;
+    await prisma.storedFile.create({
+      data: {
+        id,
+        filename: storedName,
+        mimeType,
+        data: buf,
+      },
+    });
+
+    const url = `/uploads/${storedName}`;
     res.status(201).json({
       success: true,
-      data: { url, filename: filename ?? name },
+      data: { url, filename: filename ?? storedName },
     });
   } catch (e) {
     res.status(500).json({ success: false, error: { message: e instanceof Error ? e.message : "Upload failed" } });

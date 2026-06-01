@@ -125,6 +125,16 @@ model Project {
   @@map("projects")
 }
 
+model StoredFile {
+  id        String   @id @default(uuid()) @db.Uuid
+  filename  String   @unique
+  mimeType  String   @map("mime_type")
+  data      Bytes
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stored_files")
+}
+
 model Investment {
   id            String           @id @default(uuid()) @db.Uuid
   projectId     String           @map("project_id") @db.Uuid
