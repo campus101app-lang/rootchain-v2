@@ -37,7 +37,22 @@ CORS_ORIGIN=https://your-app.vercel.app,https://your-admin.vercel.app
 
 ---
 
-## 2. Deploy web on Vercel
+## 2. Deploy marketing landing (Next.js) on Vercel
+
+1. **New Project** → same repo.
+2. **Root Directory:** `apps/landing`
+3. **Framework:** Next.js
+4. **Environment:**
+
+| Name | Value |
+|------|--------|
+| `NEXT_PUBLIC_APP_URL` | `https://your-vite-app.vercel.app` (or custom domain for `apps/web`) |
+
+5. Deploy → use this URL as your public homepage; CTAs link to the main app.
+
+---
+
+## 3. Deploy web app on Vercel
 
 1. **Add New Project** → import `rootchain-v2` (or paste Git URL above).
 2. **Root Directory:** `apps/web`  
@@ -56,7 +71,7 @@ SPA routes (`/marketplace`, `/dashboard`, etc.) are handled by `vercel.json` rew
 
 ---
 
-## 3. Optional: Admin on Vercel
+## 4. Optional: Admin on Vercel
 
 Second project, **Root Directory:** `apps/admin`, same install pattern, env:
 
