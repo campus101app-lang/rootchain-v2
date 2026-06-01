@@ -8,7 +8,7 @@ import {
   TransactionBuilder,
   Horizon,
 } from "@stellar/stellar-sdk";
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, $Enums } from "@prisma/client";
 import { appendFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { horizonUrl, networkPassphraseConst, USDC_CODE, usdcIssuer } from "../src/stellar/config.js";
@@ -99,7 +99,7 @@ async function main() {
       data: {
         email,
         passwordHash: await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD ?? "ChangeMeAdmin123!", 12),
-        role: Role.ADMIN,
+        role: $Enums.Role.ADMIN,
         fullName: "Platform Admin",
       },
     });

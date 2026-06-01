@@ -37,10 +37,12 @@ CORS_ORIGIN=https://YOUR-VERCEL-URL.vercel.app
 
 ## One-time after Railway is healthy
 
-Railway API → **Shell**:
+Railway API → **Shell** (not your Mac — needs Railway `DATABASE_URL`):
 
 ```bash
 npm run db:seed --workspace=server
 ```
+
+**Local Mac seed error?** Run `cd server && npx prisma generate` first, and use Docker Postgres (`docker compose up -d postgres`) or Railway’s **public** DB URL in `server/.env` — not `localhost:5434` unless Docker is running.
 
 Add any `TESTNET_USDC_ISSUER` / `PLATFORM_ESCROW_*` variables the seed prints.

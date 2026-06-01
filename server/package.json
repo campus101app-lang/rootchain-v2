@@ -11,7 +11,7 @@
     "db:generate": "node scripts/prisma-env.mjs generate",
     "db:migrate": "node scripts/prisma-env.mjs migrate dev",
     "db:deploy": "node scripts/prisma-env.mjs migrate deploy",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "prisma generate && tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
