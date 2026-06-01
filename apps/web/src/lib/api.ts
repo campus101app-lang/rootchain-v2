@@ -42,11 +42,15 @@ export async function api<T>(
   try {
     json = (await res.json()) as typeof json;
   } catch {
-    const hint = isProductionMisconfigured()
-      ? " Set VITE_API_URL to your Railway API URL in Vercel and redeploy."
-      : res.status === 404
-        ? " The API URL may be wrong (got HTML, not JSON)."
-        : "";
+    let hint = "";
+    if (isProductionMisconfigured() || res.status === 405) {
+      hint =
+        " Set VITE_API_URL=https://rootchain-v2-production.up.railway.app/api/v1 in Vercel → Environment Variables, then Redeploy. (405 = request hit Vercel, not Railway.)";
+    } else if (res.status === 404) {
+      hint = " The API URL may be wrong (got HTML, not JSON).";
+    } else if (res.status >= 502) {
+      hint = " Railway API may be down — fix DATABASE_URL on Railway (see DEPLOY-RAILWAY.md).";
+    }
     throw new Error(`Invalid response from server (${res.status}).${hint}`);
   }
 

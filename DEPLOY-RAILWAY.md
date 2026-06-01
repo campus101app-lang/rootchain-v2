@@ -20,17 +20,37 @@ You need **two deployments**:
 
 ---
 
-## Step 2 — PostgreSQL
+## Step 2 — PostgreSQL (fixes empty `DATABASE_URL`)
 
-1. In the project → **+ New** → **Database** → **PostgreSQL**.
-2. Open the Postgres service → **Variables** → copy **`DATABASE_URL`**.
-3. Open your **API service** → **Variables** → add:
+Your deploy log shows:
 
-```env
-DATABASE_URL=${{Postgres.DATABASE_URL}}
+```text
+DATABASE_URL resolved to an empty string
 ```
 
-(Railway variable reference, or paste the full URL manually.)
+That means Postgres is **not linked** to the API service yet.
+
+### Do this exactly
+
+1. In the same Railway project, click **+ New** → **Database** → **PostgreSQL**.
+2. Wait until Postgres shows **Active**.
+3. Click your **API service** (`rootchain-v2` / honest-spirit) → **Variables**.
+4. **Delete** any `DATABASE_URL` row that is blank or only spaces.
+5. Click **+ New Variable** → **Add variable reference** (or "Reference"):
+   - Variable name: `DATABASE_URL`
+   - Reference: select your **Postgres** service → `DATABASE_URL`
+   
+   It should look like: `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`  
+   (Service name might be `Postgres` or `postgresql` — pick the database service.)
+
+6. Click **Deploy** / wait for automatic redeploy.
+
+### Verify
+
+**Deployments** → latest should be **Success**.  
+**Deploy logs** should show `listening on 0.0.0.0:8080`, not Prisma P1012.
+
+Open: https://rootchain-v2-production.up.railway.app/api/v1/health
 
 ---
 
