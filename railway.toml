@@ -2,6 +2,7 @@
 [build]
 builder = "nixpacks"
 buildCommand = "npm ci && npm run build --workspace=@rootchain/server"
+watchPatterns = ["/server/**", "/packages/**", "/railway.toml", "/package.json", "/package-lock.json"]
 
 [deploy]
 startCommand = "npm run start:prod --workspace=@rootchain/server"

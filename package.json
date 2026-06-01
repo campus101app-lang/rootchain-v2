@@ -4,7 +4,6 @@
   "workspaces": [
     "apps/web",
     "apps/admin",
-    "apps/landing",
     "server",
     "packages/shared"
   ],
@@ -12,7 +11,7 @@
     "dev:api": "npm run dev --workspace=server",
     "dev:web": "npm run dev --workspace=@rootchain/web",
     "dev:admin": "npm run dev --workspace=@rootchain/admin",
-    "dev:landing": "npm run dev --workspace=landing",
+    "dev:landing": "cd apps/landing && npm run dev",
     "dev": "npm run dev:api & npm run dev:web",
     "db:deploy": "npm run db:deploy --workspace=server",
     "db:seed": "npm run db:seed --workspace=server",
