@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { LandingPage } from "./pages/Landing";
+import { SignupChoosePage } from "./pages/SignupChoose";
 import { SignupInvestorPage } from "./pages/SignupInvestor";
 import { SignupFarmerPage } from "./pages/SignupFarmer";
 import { LoginPage } from "./pages/Login";
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/marketplace" element={<MarketplacePage />} />
       <Route path="/projects/:id" element={<ProjectDetailPage />} />
+      <Route path="/signup" element={<SignupChoosePage />} />
       <Route path="/signup/investor" element={<SignupInvestorPage />} />
       <Route path="/signup/farmer" element={<SignupFarmerPage />} />
       <Route path="/login" element={<LoginPage />} />

@@ -37,8 +37,13 @@ export function Hero() {
                   Start Investing <ArrowRight size={16} />
                 </Button>
               </Link>
+              <Link to="/signup/farmer">
+                <Button variant="outline" className="px-6 py-3 border-lime/30 text-lime hover:bg-lime/10">
+                  I&apos;m a Farm Owner
+                </Button>
+              </Link>
               <Link to="/marketplace">
-                <Button variant="outline" className="px-6 py-3">
+                <Button variant="ghost" className="px-6 py-3">
                   Explore Farms
                 </Button>
               </Link>

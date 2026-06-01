@@ -48,6 +48,16 @@ export function LoginPage() {
             {loading ? "Signing in…" : "Sign in"}
           </Btn>
         </form>
+        <p className="text-sm text-slate-500 text-center pt-2">
+          New here?{" "}
+          <Link to="/signup/farmer" className="text-lime hover:underline">
+            Farm owner
+          </Link>
+          {" · "}
+          <Link to="/signup/investor" className="text-lime hover:underline">
+            Investor
+          </Link>
+        </p>
       </Glass>
     </Shell>
   );

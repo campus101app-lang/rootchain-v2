@@ -7,6 +7,8 @@ const cols = [
       { href: "#features", label: "Features" },
       { href: "#marketplace", label: "Marketplace" },
       { href: `/marketplace`, label: "Live app" },
+      { href: `/signup/farmer`, label: "Farm owner signup" },
+      { href: `/signup/investor`, label: "Investor signup" },
     ],
   },
   {

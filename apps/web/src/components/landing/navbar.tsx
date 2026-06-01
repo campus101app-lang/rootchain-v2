@@ -54,7 +54,10 @@ export function Navbar() {
           <Link to="/login">
             <Button variant="ghost">Login</Button>
           </Link>
-          <Link to="/signup/investor">
+          <Link to="/signup/farmer">
+            <Button variant="outline">For Farmers</Button>
+          </Link>
+          <Link to="/signup">
             <Button>Launch App</Button>
           </Link>
         </div>
@@ -91,7 +94,12 @@ export function Navbar() {
                 Login
               </Button>
             </Link>
-            <Link to="/signup/investor">
+            <Link to="/signup/farmer">
+              <Button variant="outline" className="w-full">
+                For Farmers
+              </Button>
+            </Link>
+            <Link to="/signup">
               <Button className="w-full">Launch App</Button>
             </Link>
           </div>

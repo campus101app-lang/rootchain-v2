@@ -16,8 +16,8 @@ export function FinalCta() {
           Join farmers and investors building a transparent, on-chain future for ag finance.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <Link to="/signup/investor">
-            <Button className="px-8 py-3">Launch App</Button>
+          <Link to="/signup/farmer">
+            <Button className="px-8 py-3">List Your Farm</Button>
           </Link>
           <Link to="/signup/investor">
             <Button variant="secondary" className="px-8 py-3">

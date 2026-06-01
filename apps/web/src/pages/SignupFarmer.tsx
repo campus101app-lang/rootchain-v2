@@ -51,7 +51,9 @@ export function SignupFarmerPage() {
       <Glass className="p-8 max-w-md mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-black">Farm Owner account</h1>
-          <p className="text-sm text-slate-500 mt-1">Admin verifies your profile before projects go live.</p>
+          <p className="text-sm text-slate-500 mt-1">
+            Create your profile and Stellar wallet, then publish a funding project from your dashboard.
+          </p>
         </div>
         <form onSubmit={submit} className="space-y-4">
           <Field label="Your name" required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
@@ -66,6 +68,12 @@ export function SignupFarmerPage() {
             {loading ? "Creating account…" : "Create account & wallet"}
           </Btn>
         </form>
+        <p className="text-sm text-slate-500 text-center">
+          Investing instead?{" "}
+          <Link to="/signup/investor" className="text-lime hover:underline">
+            Sign up as investor
+          </Link>
+        </p>
       </Glass>
     </Shell>
   );

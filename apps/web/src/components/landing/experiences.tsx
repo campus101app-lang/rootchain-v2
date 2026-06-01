@@ -1,6 +1,8 @@
-
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { Section, SectionHeader } from "./section";
 import { Card } from "../marketing-ui/card";
+import { Button } from "../marketing-ui/button";
 
 export function InvestorExperience() {
   return (
@@ -64,6 +66,16 @@ export function FarmerExperience() {
               <p className="mt-2 text-sm text-slate-400">{x.d}</p>
             </Card>
           ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link to="/signup/farmer">
+            <Button className="px-8 py-3">
+              Create farm owner account <ArrowRight size={16} />
+            </Button>
+          </Link>
+          <p className="mt-3 text-xs text-slate-500">
+            After signup: wallet setup → dashboard → publish your first project.
+          </p>
         </div>
       </div>
     </Section>
