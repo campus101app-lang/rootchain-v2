@@ -53,6 +53,11 @@ cd apps/admin && npm install && npm run dev
 
 After seed, if investments fail with no USDC: `cd server && npx tsx scripts/bootstrap-usdc.ts`
 
+## Deploy
+
+- **Web (Vercel):** see [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md) — Root Directory `apps/web`, set `VITE_API_URL` to your Railway API.
+- **API + DB (Railway):** deploy `server/` with Postgres; not hosted on Vercel.
+
 ## Mainnet flip
 
 Set in `server/.env` and `apps/web/.env`:
